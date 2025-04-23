@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgresdb
+    restart: always
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: star_wars
+
+  app:
+    build: .
+    container_name: nestjs-app
+    restart: always
+    ports:
+      - '3000:3000'
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_USER: user
+      DATABASE_PASSWORD: password
+      DATABASE_NAME: star_wars
+    command: npm run start:prod
+
+volumes:
+  postgres_data: {}
