@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
 import { CharacterEntity } from './entities/character.entity';
@@ -11,7 +7,6 @@ import { Repository } from 'typeorm';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { CharacterNameDto } from './dto/character-name.dto';
 import { mapCharacterEntityToDto } from './character.mapper';
-import { isDuplicateKeyError } from 'src/helpers/errors';
 
 @Injectable()
 export class CharactersService {
@@ -21,20 +16,12 @@ export class CharactersService {
   ) {}
 
   async create(createCharacterDto: CreateCharacterDto) {
-    try {
-      const character = this.characterRepo.create(createCharacterDto);
-      const savedCharacter = await this.characterRepo.save(character);
+    const character = this.characterRepo.create(createCharacterDto);
+    const savedCharacter = await this.characterRepo.save(character);
 
-      return {
-        message: `Character ${savedCharacter.name} created successfully`,
-      };
-    } catch (error) {
-      if (isDuplicateKeyError(error)) {
-        throw new ConflictException(
-          `Character with the name ${createCharacterDto.name} already exists.`,
-        );
-      }
-    }
+    return {
+      message: `Character ${savedCharacter.name} created successfully`,
+    };
   }
 
   async findAll({ page, perPage }: PaginationDto) {
@@ -68,23 +55,23 @@ export class CharactersService {
     { name }: CharacterNameDto,
     updateCharacterDto: UpdateCharacterDto,
   ) {
-    await this.characterRepo.update(name, updateCharacterDto);
-    const updatedCharacter = await this.characterRepo.findOne({
-      where: { name },
-    });
+    const result = await this.characterRepo.update(
+      { name },
+      updateCharacterDto,
+    );
 
-    if (!updatedCharacter) {
-      throw new NotFoundException(`Character with ${name} not found`);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Character '${name}' not found`);
     }
 
-    return { message: `Character ${name} updated successfully` };
+    return { message: `Character '${name}' updated successfully` };
   }
 
   async remove({ name }: CharacterNameDto) {
     const result = await this.characterRepo.delete({ name });
     if (result.affected === 0) {
-      throw new NotFoundException(`Character with ${name} not found`);
+      throw new NotFoundException(`Character ${name} not found`);
     }
-    return { message: 'Character deleted successfully' };
+    return { message: `Character ${name} deleted successfully` };
   }
 }

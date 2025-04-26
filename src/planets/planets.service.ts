@@ -1,14 +1,9 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PlanetEntity } from './entities/planet.entity';
 import { PlanetNameDto } from './dto/planet-name.dto';
-import { isDuplicateKeyError } from 'src/helpers/errors';
 
 @Injectable()
 export class PlanetsService {
@@ -35,19 +30,11 @@ export class PlanetsService {
   }
 
   async create({ name }: PlanetNameDto) {
-    try {
-      const planet = this.planetRepo.create({ name });
-      const savedPlanet = await this.planetRepo.save(planet);
+    const planet = this.planetRepo.create({ name });
+    const savedPlanet = await this.planetRepo.save(planet);
 
-      return {
-        message: `Planet ${savedPlanet.name} created successfully`,
-      };
-    } catch (error) {
-      if (isDuplicateKeyError(error)) {
-        throw new ConflictException(
-          `Planet with the name ${name} already exists.`,
-        );
-      }
-    }
+    return {
+      message: `Planet ${savedPlanet.name} created successfully`,
+    };
   }
 }

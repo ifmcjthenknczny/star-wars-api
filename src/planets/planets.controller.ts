@@ -10,7 +10,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { PlanetsService } from './planets.service';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { DEFAULT_VALUES, PaginationDto } from 'src/common/dto/pagination.dto';
 import { Protected } from 'src/common/decorators/protected/protected.decorator';
 import { ApiResponse } from '@nestjs/swagger';
 import { CreatePlanetDto } from './dto/create-planet.dto';
@@ -22,19 +22,27 @@ export class PlanetsController {
   @Get()
   @ApiResponse({
     status: 200,
-    description: 'Successful response with a list of planets',
+    description: 'Successful response with paginated list of planets',
     content: {
       'application/json': {
         schema: {
-          type: 'array',
-          items: {
-            type: 'object',
-            properties: {
-              name: {
-                type: 'string',
-                example: 'Earth',
+          type: 'object',
+          properties: {
+            result: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  name: { type: 'string', example: 'Earth' },
+                },
               },
             },
+            perPage: {
+              type: 'number',
+              example: 10,
+              default: DEFAULT_VALUES.perPage,
+            },
+            page: { type: 'number', example: 1, default: DEFAULT_VALUES.page },
           },
         },
       },
@@ -44,8 +52,9 @@ export class PlanetsController {
     status: 400,
     description: 'Bad request, possibly a validation error',
   })
-  findAll(@Query() pagination: PaginationDto) {
-    return this.planetsService.findAll(pagination);
+  async findAll(@Query() pagination: PaginationDto) {
+    const result = await this.planetsService.findAll(pagination);
+    return { result, ...pagination };
   }
 
   @Protected()
@@ -55,8 +64,12 @@ export class PlanetsController {
     description: 'Planet successfully deleted',
     example: { message: 'Planet Earth deleted successfully' },
   })
-  @ApiResponse({ status: 404, description: 'Planet not found' })
-  remove(@Param('name') name: string) {
+  @ApiResponse({
+    status: 404,
+    description: 'Planet not found',
+    example: { message: 'Planet Earth not found' },
+  })
+  async remove(@Param('name') name: string) {
     return this.planetsService.remove({ name });
   }
 
@@ -81,7 +94,7 @@ export class PlanetsController {
     },
   })
   @Post()
-  create(@Body() createPlanetDto: CreatePlanetDto) {
+  async create(@Body() createPlanetDto: CreatePlanetDto) {
     return this.planetsService.create(createPlanetDto);
   }
 }

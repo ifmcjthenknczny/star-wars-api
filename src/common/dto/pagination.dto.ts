@@ -2,7 +2,7 @@ import { Type } from 'class-transformer';
 import { IsInt, Min, IsOptional, Max } from 'class-validator';
 import { Default } from '../decorators/default/default.decorator';
 
-const DEFAULT_VALUES = {
+export const DEFAULT_VALUES = {
   page: 1,
   perPage: 10,
 };

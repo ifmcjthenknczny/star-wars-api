@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEpisodeDto } from './dto/create-episode.dto';
 import { UpdateEpisodeDto } from './dto/update-episode.dto';
 import { EpisodeEntity } from './entities/episode.entity';
@@ -15,7 +15,12 @@ export class EpisodesService {
   ) {}
 
   async create(createEpisodeDto: CreateEpisodeDto) {
-    return this.episodesRepo.save(createEpisodeDto);
+    const episode = this.episodesRepo.create(createEpisodeDto);
+    const savedEpisode = await this.episodesRepo.save(episode);
+
+    return {
+      message: `Episode ${savedEpisode.codename} created successfully`,
+    };
   }
 
   async findAll({ page, perPage }: PaginationDto) {
@@ -31,10 +36,18 @@ export class EpisodesService {
     { codename }: EpisodeCodenameDto,
     updateEpisodeDto: UpdateEpisodeDto,
   ) {
-    return this.episodesRepo.update(codename, updateEpisodeDto);
+    const result = await this.episodesRepo.update(codename, updateEpisodeDto);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Episode '${codename}' not found`);
+    }
+    return { message: `Episode '${codename}' updated successfully` };
   }
 
   async remove({ codename }: EpisodeCodenameDto) {
-    return this.episodesRepo.delete(codename);
+    const result = await this.episodesRepo.delete(codename);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Episode '${codename}' not found`);
+    }
+    return { message: `Episode '${codename}' deleted successfully` };
   }
 }

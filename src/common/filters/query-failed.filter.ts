@@ -17,10 +17,16 @@ const formatErrorDetails = (details?: string, table?: string) => {
   return details;
 };
 
+type DriverError = Error & {
+  code?: string;
+  detail?: string;
+  table?: string;
+};
+
 @Catch(QueryFailedError)
 export class QueryFailedFilter implements ExceptionFilter {
   catch(exception: QueryFailedError) {
-    const driverError = (exception as any).driverError;
+    const driverError: DriverError = exception.driverError;
 
     if (driverError?.code === '23505') {
       throw new ConflictException(
