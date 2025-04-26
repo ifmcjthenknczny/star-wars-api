@@ -1,21 +1,14 @@
-import { Trim } from 'src/helpers/decorators';
-import {
-  IsInt,
-  IsNotEmpty,
-  IsString,
-  IsArray,
-  IsOptional,
-} from 'class-validator';
+import { Trim } from 'src/common/decorators/trim/trim.decorator';
+import { IsNotEmpty, IsString, IsArray, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateCharacterDto {
   @Trim()
   @IsString({
-    message:
-      'Character name must be a string. Ensure that name is a valid string.',
+    message: 'Character name must be a string.',
   })
   @IsNotEmpty({
-    message: 'Character name should not be empty. Please provide a valid name.',
+    message: 'Character name should not be empty.',
   })
   @ApiProperty({
     example: 'James Lovelock',
@@ -25,22 +18,27 @@ export class CreateCharacterDto {
 
   @Trim()
   @IsOptional()
-  @IsInt({
-    message:
-      'Character planet id must be an integer. Ensure that planet id is a valid integer.',
+  @IsString({
+    message: 'Character planet must be a string.',
   })
-  planetId: string;
+  @ApiProperty({
+    example: 'Earth',
+    description: `Name of character home planet`,
+  })
+  planet?: string;
 
   @IsArray()
-  @IsInt({
+  @IsString({
     each: true,
-    message:
-      'Episode ids must be an array of integers. Ensure that every element is a valid integer.',
+    message: 'Episodes must be an array of strings.',
   })
   @IsNotEmpty({
     each: true,
-    message:
-      'Episode ids should not be empty. Please provide valid episode ids.',
+    message: 'Episodes should not be empty.',
+  })
+  @ApiProperty({
+    example: ['PHANTOM', 'CLONES'],
+    description: `Codename of episodes character has been in`,
   })
   episodeIds: string[];
 }

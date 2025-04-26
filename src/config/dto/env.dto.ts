@@ -4,6 +4,10 @@ import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 export class EnvironmentVariables {
   [key: string]: string | number | boolean;
 
+  @IsString()
+  @IsNotEmpty()
+  API_KEY: string;
+
   @IsNotEmpty()
   @IsNumber()
   @IsOptional()

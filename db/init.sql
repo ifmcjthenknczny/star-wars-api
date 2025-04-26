@@ -1,23 +1,22 @@
 CREATE TABLE IF NOT EXISTS planets (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) UNIQUE NOT NULL
+    name VARCHAR(255) UNIQUE NOT NULL PRIMARY KEY
 );
 
 CREATE TABLE IF NOT EXISTS characters (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    planet_id INTEGER REFERENCES planets(id)
+    name VARCHAR(255) NOT NULL UNIQUE PRIMARY KEY,
+    planet VARCHAR(255) REFERENCES planets(name) DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS episodes (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) UNIQUE NOT NULL
+    codename VARCHAR(32) UNIQUE NOT NULL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    episode_number INTEGER UNIQUE CHECK (episode_number > 0)
 );
 
 CREATE TABLE IF NOT EXISTS character_episodes (
-    character_id INTEGER REFERENCES characters(id),
-    episode_id INTEGER REFERENCES episodes(id),
-    PRIMARY KEY (character_id, episode_id)
+    character_name VARCHAR(255) REFERENCES characters(name) ON DELETE CASCADE,
+    episode VARCHAR(32) REFERENCES episodes(codename) ON DELETE CASCADE,
+    PRIMARY KEY (character_name, episode)
 );
 
 -- Planets
@@ -33,35 +32,48 @@ INSERT INTO planets (name) VALUES
 ('Utapau');
 
 -- Episodes
-INSERT INTO episodes (name) VALUES ('NEWHOPE', 'EMPIRE', 'JEDI', 'CLONES', 'SITHS', 'FORCE', 'LASTJEDI', 'RISE', 'PHANTOM');
+INSERT INTO episodes (codename, title, episode_number) VALUES
+('PHANTOM', 'The Phantom Menace', 1),
+('CLONES', 'Attack of the Clones', 2),
+('SITHS', 'Revenge of the Sith', 3),
+('NEWHOPE', 'A New Hope', 4),
+('EMPIRE', 'The Empire Strikes Back', 5),
+('JEDI', 'Return of the Jedi', 6),
+('FORCE', 'The Force Awakens', 7),
+('LASTJEDI', 'The Last Jedi', 8),
+('RISE', 'The Rise of Skywalker', 9);
 
 -- Characters
-INSERT INTO characters (name, planet_id) VALUES ('Luke Skywalker', NULL);
-INSERT INTO characters (name, planet_id) VALUES ('Darth Vader', NULL);
-INSERT INTO characters (name, planet_id) VALUES ('Han Solo', NULL);
-INSERT INTO characters (name, planet_id) VALUES ('Leia Organa', (SELECT id FROM planets WHERE name = 'Alderaan'));
-INSERT INTO characters (name, planet_id) VALUES ('Wilhuff Tarkin', NULL);
-INSERT INTO characters (name, planet_id) VALUES ('C-3PO', NULL);
-INSERT INTO characters (name, planet_id) VALUES ('R2-D2', NULL);
+INSERT INTO characters (name, planet) VALUES
+('Luke Skywalker', NULL),
+('Darth Vader', NULL),
+('Han Solo', NULL),
+('Leia Organa', 'Alderaan'),
+('Wilhuff Tarkin', NULL),
+('C-3PO', NULL),
+('R2-D2', NULL);
 
 -- Character episodes
-INSERT INTO character_episodes (character_id, episode_id) VALUES
-((SELECT id FROM characters WHERE name = 'Luke Skywalker'), (SELECT id FROM episodes WHERE name = 'NEWHOPE')),
-((SELECT id FROM characters WHERE name = 'Luke Skywalker'), (SELECT id FROM episodes WHERE name = 'EMPIRE')),
-((SELECT id FROM characters WHERE name = 'Luke Skywalker'), (SELECT id FROM episodes WHERE name = 'JEDI')),
-((SELECT id FROM characters WHERE name = 'Darth Vader'), (SELECT id FROM episodes WHERE name = 'NEWHOPE')),
-((SELECT id FROM characters WHERE name = 'Darth Vader'), (SELECT id FROM episodes WHERE name = 'EMPIRE')),
-((SELECT id FROM characters WHERE name = 'Darth Vader'), (SELECT id FROM episodes WHERE name = 'JEDI')),
-((SELECT id FROM characters WHERE name = 'Han Solo'), (SELECT id FROM episodes WHERE name = 'NEWHOPE')),
-((SELECT id FROM characters WHERE name = 'Han Solo'), (SELECT id FROM episodes WHERE name = 'EMPIRE')),
-((SELECT id FROM characters WHERE name = 'Han Solo'), (SELECT id FROM episodes WHERE name = 'JEDI')),
-((SELECT id FROM characters WHERE name = 'Leia Organa'), (SELECT id FROM episodes WHERE name = 'NEWHOPE')),
-((SELECT id FROM characters WHERE name = 'Leia Organa'), (SELECT id FROM episodes WHERE name = 'EMPIRE')),
-((SELECT id FROM characters WHERE name = 'Leia Organa'), (SELECT id FROM episodes WHERE name = 'JEDI')),
-((SELECT id FROM characters WHERE name = 'Wilhuff Tarkin'), (SELECT id FROM episodes WHERE name = 'NEWHOPE')),
-((SELECT id FROM characters WHERE name = 'C-3PO'), (SELECT id FROM episodes WHERE name = 'NEWHOPE')),
-((SELECT id FROM characters WHERE name = 'C-3PO'), (SELECT id FROM episodes WHERE name = 'EMPIRE')),
-((SELECT id FROM characters WHERE name = 'C-3PO'), (SELECT id FROM episodes WHERE name = 'JEDI')),
-((SELECT id FROM characters WHERE name = 'R2-D2'), (SELECT id FROM episodes WHERE name = 'NEWHOPE')),
-((SELECT id FROM characters WHERE name = 'R2-D2'), (SELECT id FROM episodes WHERE name = 'EMPIRE')),
-((SELECT id FROM characters WHERE name = 'R2-D2'), (SELECT id FROM episodes WHERE name = 'JEDI'));
+INSERT INTO character_episodes (character_name, episode) VALUES
+('Luke Skywalker', 'NEWHOPE'),
+('Luke Skywalker', 'EMPIRE'),
+('Luke Skywalker', 'JEDI'),
+('Darth Vader', 'NEWHOPE'),
+('Darth Vader', 'EMPIRE'),
+('Darth Vader', 'JEDI'),
+('Han Solo', 'NEWHOPE'),
+('Han Solo', 'EMPIRE'),
+('Han Solo', 'JEDI'),
+('Leia Organa', 'NEWHOPE'),
+('Leia Organa', 'EMPIRE'),
+('Leia Organa', 'JEDI'),
+('Wilhuff Tarkin', 'NEWHOPE'),
+('C-3PO', 'NEWHOPE'),
+('C-3PO', 'EMPIRE'),
+('C-3PO', 'JEDI'),
+('R2-D2', 'NEWHOPE'),
+('R2-D2', 'EMPIRE'),
+('R2-D2', 'JEDI');
+
+CREATE INDEX idx_character_name ON character_episodes(character_name);
+CREATE INDEX idx_episode ON character_episodes(episode);

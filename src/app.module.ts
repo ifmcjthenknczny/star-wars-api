@@ -3,6 +3,8 @@ import { CharactersModule } from './characters/characters.module';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from './config/config.module';
 import { LoggerModule } from 'nestjs-pino';
+import { EpisodesModule } from './episodes/episodes.module';
+import { PlanetsModule } from './planets/planets.module';
 @Module({
   imports: [
     CharactersModule,
@@ -21,6 +23,8 @@ import { LoggerModule } from 'nestjs-pino';
         },
       },
     }),
+    EpisodesModule,
+    PlanetsModule,
   ],
   controllers: [],
   providers: [],

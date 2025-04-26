@@ -1,13 +1,21 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Optional } from '@nestjs/common';
+import { Entity, Column, Unique, PrimaryColumn, OneToMany } from 'typeorm';
+import { CharacterEpisode } from './character-episodes.entity';
 
 @Entity('characters')
+@Unique(['name'])
 export class CharacterEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
   @Column()
+  @PrimaryColumn()
   name: string;
 
   @Column()
-  planet_id: number;
+  @Optional()
+  planet: string;
+
+  @OneToMany(
+    () => CharacterEpisode,
+    (characterEpisode) => characterEpisode.character,
+  )
+  characterEpisodes: CharacterEpisode[];
 }
