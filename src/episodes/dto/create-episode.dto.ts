@@ -20,6 +20,8 @@ export class CreateEpisodeDto {
   @ApiProperty({
     example: 'CLONES',
     description: 'Codename of Star Wars episode',
+    minLength: 1,
+    maxLength: 32,
   })
   codename: string;
 
@@ -32,7 +34,9 @@ export class CreateEpisodeDto {
   })
   @ApiProperty({
     example: 'Attack of the Clones',
-    description: 'Title of Star Wars episode',
+    description: 'Full subtitle of Star Wars episode',
+    minLength: 1,
+    maxLength: 255,
   })
   @IsString()
   title: string;
@@ -45,8 +49,10 @@ export class CreateEpisodeDto {
   })
   @IsOptional()
   @ApiProperty({
-    example: 'CLONES',
-    description: 'Codename of Star Wars episode',
+    example: 2,
+    description: 'Ordinal number of Star Wars episode',
+    required: false,
+    minimum: 1,
   })
   episode_number?: number;
 }

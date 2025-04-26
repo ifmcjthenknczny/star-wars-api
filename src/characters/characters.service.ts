@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
 import { CharacterEntity } from './entities/character.entity';
@@ -7,6 +11,7 @@ import { Repository } from 'typeorm';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { CharacterNameDto } from './dto/character-name.dto';
 import { mapCharacterEntityToDto } from './character.mapper';
+import { isDuplicateKeyError } from 'src/helpers/errors';
 
 @Injectable()
 export class CharactersService {
@@ -16,12 +21,20 @@ export class CharactersService {
   ) {}
 
   async create(createCharacterDto: CreateCharacterDto) {
-    const character = this.characterRepo.create(createCharacterDto);
-    const savedCharacter = await this.characterRepo.save(character);
+    try {
+      const character = this.characterRepo.create(createCharacterDto);
+      const savedCharacter = await this.characterRepo.save(character);
 
-    return {
-      message: `Character ${savedCharacter.name} created successfully`,
-    };
+      return {
+        message: `Character ${savedCharacter.name} created successfully`,
+      };
+    } catch (error) {
+      if (isDuplicateKeyError(error)) {
+        throw new ConflictException(
+          `Character with the name ${createCharacterDto.name} already exists.`,
+        );
+      }
+    }
   }
 
   async findAll({ page, perPage }: PaginationDto) {
@@ -64,7 +77,7 @@ export class CharactersService {
       throw new NotFoundException(`Character with ${name} not found`);
     }
 
-    return { message: `Character of ${name} updated successfully` };
+    return { message: `Character ${name} updated successfully` };
   }
 
   async remove({ name }: CharacterNameDto) {

@@ -14,11 +14,11 @@ export class EpisodesService {
     private readonly episodesRepo: Repository<EpisodeEntity>,
   ) {}
 
-  create(createEpisodeDto: CreateEpisodeDto) {
+  async create(createEpisodeDto: CreateEpisodeDto) {
     return this.episodesRepo.save(createEpisodeDto);
   }
 
-  findAll({ page, perPage }: PaginationDto) {
+  async findAll({ page, perPage }: PaginationDto) {
     const skip = (page - 1) * perPage;
     return this.episodesRepo.find({
       skip,
@@ -27,15 +27,14 @@ export class EpisodesService {
     });
   }
 
-  findOne({ codename }: EpisodeCodenameDto) {
-    return this.episodesRepo.findOne({ where: { codename } });
-  }
-
-  update({ codename }: EpisodeCodenameDto, updateEpisodeDto: UpdateEpisodeDto) {
+  async update(
+    { codename }: EpisodeCodenameDto,
+    updateEpisodeDto: UpdateEpisodeDto,
+  ) {
     return this.episodesRepo.update(codename, updateEpisodeDto);
   }
 
-  remove({ codename }: EpisodeCodenameDto) {
+  async remove({ codename }: EpisodeCodenameDto) {
     return this.episodesRepo.delete(codename);
   }
 }

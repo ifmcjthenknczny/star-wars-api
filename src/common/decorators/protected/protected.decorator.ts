@@ -1,16 +1,11 @@
 import { applyDecorators } from '@nestjs/common';
-import { ApiHeader, ApiSecurity } from '@nestjs/swagger';
+import { ApiExcludeEndpoint, ApiSecurity } from '@nestjs/swagger';
 import { UseGuards } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 import { ApiKeyGuard } from 'src/common/guards/api-key/api-key.guard';
 
 export function Protected() {
-  return applyDecorators(
-    ApiHeader({
-      name: 'x-api-key',
-      description: 'API key to authorize the request',
-      required: true,
-    }),
+  const decorators = [
     ApiSecurity('x-api-key'),
     UseGuards(ApiKeyGuard),
     ApiResponse({
@@ -32,5 +27,19 @@ export function Protected() {
         },
       },
     }),
-  );
+  ];
+
+  if (process.env.NODE_ENV === 'production') {
+    decorators.push(
+      (
+        target: object,
+        propertyKey?: string | symbol,
+        descriptor?: PropertyDescriptor,
+      ) => {
+        ApiExcludeEndpoint()(target, propertyKey!, descriptor!);
+      },
+    );
+  }
+
+  return applyDecorators(...decorators);
 }

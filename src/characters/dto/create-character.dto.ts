@@ -13,6 +13,8 @@ export class CreateCharacterDto {
   @ApiProperty({
     example: 'James Lovelock',
     description: 'Name of character',
+    minLength: 1,
+    maxLength: 255,
   })
   name: string;
 
@@ -24,6 +26,9 @@ export class CreateCharacterDto {
   @ApiProperty({
     example: 'Earth',
     description: `Name of character home planet`,
+    required: false,
+    minLength: 1,
+    maxLength: 255,
   })
   planet?: string;
 
@@ -39,6 +44,7 @@ export class CreateCharacterDto {
   @ApiProperty({
     example: ['PHANTOM', 'CLONES'],
     description: `Codename of episodes character has been in`,
+    minLength: 1,
   })
-  episodeIds: string[];
+  episodes: string[];
 }

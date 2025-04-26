@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as bodyParser from 'body-parser';
 import { Logger } from 'nestjs-pino';
 import { ValidationPipe } from '@nestjs/common';
+import { QueryFailedFilter } from './common/filters/query-failed.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,10 +17,10 @@ async function bootstrap() {
   );
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('SmartHotel recruitment task')
-    .setDescription('API Documentation for SmartHotel recruitment task')
+    .setTitle('Star Wars API recruitment task')
+    .setDescription('Star Wars API Documentation')
     .setVersion('1.0')
-    .addBearerAuth()
+    .addApiKey({ type: 'apiKey', in: 'header', name: 'x-api-key' }, 'x-api-key')
     .build();
 
   const swagger = SwaggerModule.createDocument(app, swaggerConfig);
@@ -28,6 +29,7 @@ async function bootstrap() {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.useLogger(app.get(Logger));
+  app.useGlobalFilters(new QueryFailedFilter());
 
   await app.listen(process.env.PORT ?? 3000);
 }

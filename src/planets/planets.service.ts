@@ -1,9 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PlanetEntity } from './entities/planet.entity';
 import { PlanetNameDto } from './dto/planet-name.dto';
+import { isDuplicateKeyError } from 'src/helpers/errors';
 
 @Injectable()
 export class PlanetsService {
@@ -12,7 +17,7 @@ export class PlanetsService {
     private readonly planetRepo: Repository<PlanetEntity>,
   ) {}
 
-  findAll({ page, perPage }: PaginationDto) {
+  async findAll({ page, perPage }: PaginationDto) {
     const skip = (page - 1) * perPage;
     return this.planetRepo.find({
       skip,
@@ -21,7 +26,28 @@ export class PlanetsService {
     });
   }
 
-  findOne({ name }: PlanetNameDto) {
-    return this.planetRepo.findOne({ where: { name } });
+  async remove({ name }: PlanetNameDto) {
+    const result = await this.planetRepo.delete({ name });
+    if (result.affected === 0) {
+      throw new NotFoundException(`Planet ${name} not found`);
+    }
+    return { message: `Planet ${name} deleted successfully` };
+  }
+
+  async create({ name }: PlanetNameDto) {
+    try {
+      const planet = this.planetRepo.create({ name });
+      const savedPlanet = await this.planetRepo.save(planet);
+
+      return {
+        message: `Planet ${savedPlanet.name} created successfully`,
+      };
+    } catch (error) {
+      if (isDuplicateKeyError(error)) {
+        throw new ConflictException(
+          `Planet with the name ${name} already exists.`,
+        );
+      }
+    }
   }
 }
