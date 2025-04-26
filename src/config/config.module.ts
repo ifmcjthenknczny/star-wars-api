@@ -1,4 +1,3 @@
-// config.module.ts
 import { Module } from '@nestjs/common';
 import { ConfigModule as NestConfigModule } from '@nestjs/config';
 import { validate } from 'src/helpers/validate';
