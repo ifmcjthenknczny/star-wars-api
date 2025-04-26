@@ -2,7 +2,7 @@ import { Entity, Column, Unique, PrimaryColumn } from 'typeorm';
 
 @Entity('episodes')
 @Unique(['codename', 'episode_number'])
-export class Episode {
+export class EpisodeEntity {
   @Column()
   @PrimaryColumn()
   codename: string;

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateEpisodeDto } from './dto/create-episode.dto';
 import { UpdateEpisodeDto } from './dto/update-episode.dto';
-import { Episode } from './entities/episode.entity';
+import { EpisodeEntity } from './entities/episode.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EpisodeCodenameDto } from './dto/episode-codename.dto';
@@ -10,8 +10,8 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 @Injectable()
 export class EpisodesService {
   constructor(
-    @InjectRepository(Episode)
-    private readonly episodesRepo: Repository<Episode>,
+    @InjectRepository(EpisodeEntity)
+    private readonly episodesRepo: Repository<EpisodeEntity>,
   ) {}
 
   create(createEpisodeDto: CreateEpisodeDto) {

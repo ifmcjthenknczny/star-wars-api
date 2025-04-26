@@ -1,5 +1,5 @@
 import { applyDecorators } from '@nestjs/common';
-import { ApiHeader } from '@nestjs/swagger';
+import { ApiHeader, ApiSecurity } from '@nestjs/swagger';
 import { UseGuards } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 import { ApiKeyGuard } from 'src/common/guards/api-key/api-key.guard';
@@ -11,6 +11,7 @@ export function Protected() {
       description: 'API key to authorize the request',
       required: true,
     }),
+    ApiSecurity('x-api-key'),
     UseGuards(ApiKeyGuard),
     ApiResponse({
       status: 403,

@@ -23,7 +23,7 @@ async function bootstrap() {
     .build();
 
   const swagger = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('', app, swagger);
+  SwaggerModule.setup('api', app, swagger);
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));

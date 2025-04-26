@@ -1,5 +1,5 @@
 import { Entity, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { Episode } from 'src/episodes/entities/episode.entity';
+import { EpisodeEntity } from 'src/episodes/entities/episode.entity';
 import { CharacterEntity } from './character.entity';
 
 @Entity('character_episodes')
@@ -18,9 +18,9 @@ export class CharacterEpisode {
   @JoinColumn({ name: 'character_name', referencedColumnName: 'name' })
   character: CharacterEntity;
 
-  @ManyToOne(() => Episode, (episode) => episode.codename, {
+  @ManyToOne(() => EpisodeEntity, (episode) => episode.codename, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'episode', referencedColumnName: 'codename' })
-  episodeEntity: Episode;
+  episodeEntity: EpisodeEntity;
 }
