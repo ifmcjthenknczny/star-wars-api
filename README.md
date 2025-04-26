@@ -1,99 +1,122 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Star Wars API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This project implements a backend API for managing Star Wars characters. It is built using NestJS, Node.js, and TypeScript, and supports basic CRUD operations. The API is designed to handle data about characters, planets, and episodes, with pagination support to manage large datasets.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Setup and Installation
 
-## Description
+1. Make sure you have already:
+- Docker and Docker Compose installed on your machine and running.
+- Yarn installed on your machine.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
+2. Clone the Repository:
 ```bash
-$ yarn install
+git clone https://github.com/ifmcjthenknczny/hotel-reservation-file-process
+cd hotel-reservation-file-process
 ```
 
-## Compile and run the project
+3. Build and Start the Containers:
+Run the following command in `hotel-reservation-file-process` directory to start the application with required infractructure (MongoDB and Redis) locally in Docker containers:
 
 ```bash
-# development
-$ yarn run start
-
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+docker-compose up --build -d
 ```
 
-## Run tests
+This will build the project and run it in detached mode. It will also implement example data and run the PostgreSQL container. API will be available at `http://localhost:3000`, as PostgreSQL willl be available at port `5432`.
 
-```bash
-# unit tests
-$ yarn run test
+## Environment Variables
 
-# e2e tests
-$ yarn run test:e2e
+* ```API_KEY```
+Used to authenticate API requests and restrict access to certain endpoints.
 
-# test coverage
-$ yarn run test:cov
-```
+* ```DATABASE_HOST```
+Specifies the database server location (locally hosted in this case).
 
-## Deployment
+* ```DATABASE_NAME```
+The name of the PostgreSQL database containing the Star Wars data.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+* ```DATABASE_PASSWORD```
+The password for connecting to the PostgreSQL database.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+* ```DATABASE_PORT```
+The port used for the PostgreSQL database (default is 5432).
 
-```bash
-$ yarn install -g mau
-$ mau deploy
-```
+* ```DATABASE_USER```
+The username for authenticating with the PostgreSQL database.
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+* ```PORT```
+The port on which the backend API server listens.
 
-## Resources
+The values for these environment variables for Docker deployment are declared in `docker-compose.yml`. For local development, you can also use `.env` file.
 
-Check out a few resources that may come in handy when working with NestJS:
+## API Docs
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+The API is documented and accessible via Swagger at `http://localhost:3000/api`.
 
-## Support
+## API Key Authentication
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Some endpoints are secured and require the x-api-key header for access. The default API key is:
 
-## Stay in touch
+<details>
+<summary>Reveal secret</summary>
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```codeandpepper```
+</details>
 
-## License
+Add the API key to your request headers like this:
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+<details>
+<summary>Reveal secret</summary>
+
+```x-api-key: codeandpepper```
+</details>
+
+## Architectural Decisions
+
+* **REST API**: Chosen for its simplicity in implementing basic CRUD operations. It is widely popular and provides an easy way to leverage NestJS decorators for routing and handling parameters.
+
+* **Database Choice**: PostgreSQL: PostgreSQL was selected over MongoDB due to its complexity, but it provides better scalability for future expansions. The application may eventually include more detailed information about planets and episodes, requiring a normalized database structure. This decision involves creating three tables to properly represent the relationships between the data.
+
+* **Normalized Data**: The database schema is designed with normalization in mind to allow the app to grow in various directions while maintaining consistency and reducing redundancy.
+
+* **Schema vs. MongoDB Flexibility**: While MongoDB is flexible, a schema-based approach was chosen to ensure query results remain consistent and predictable. MongoDB could easily support denormalized data, but future-proofing the app with a schema will better suit the long-term goals of consistency and expandability.
+
+* **Minimized Typo Risk**: The use of table foreign keys reduces the likelihood of typos, especially when adding new content like Star Wars characters. This approach also ensures that changes in data, such as the release of a new episode, won't require code modifications.
+
+* **Additional Database Validation**: Postgres provides validation at the database level and ensures that data integrity is maintained and that only valid data is stored.
+
+* **Inspiration from PokeAPI**: The architectural choices were inspired by solutions from [PokeAPI](https://pokeapi.co/), an API with a similar goal and good documentation.
+
+* **Consistency in Data**: Planets and episodes are not automatically created when adding characters. This decision was made to maintain database consistency and avoid breaking modularity.
+
+* **Unique Planet and Character Names**: Planet and character names are treated as unique in the database. All parts from each Star Wars trilogy were added to ensure comprehensive coverage.
+
+* **User Permissions**: Users are allowed to retrieve data via GET requests but cannot perform POST, PUT, or DELETE operations. These endpoints are protected by an API key to ensure proper authorization and security.
+
+## Ensuring Application Stability in Production
+To ensure the application remains performant and stable as it grows, several key considerations have been made for the production environment:
+
+* **Future Expansion**: As additional data about planets becomes available, new endpoints may be added to allow updates. However, the existing endpoints already provide the necessary data retrieval functionality.
+
+* **Endpoint Security**: To protect endpoints from unauthorized access, JWT (JSON Web Tokens) is the recommended approach. Although implementing JWT authentication was outside the scope of this task, limited access is simulated using an API key. In the future, JWT would offer better security due to its shorter expiration time.
+
+* **Database Scalability**: The Star Wars database is not expected to grow beyond the limits of vertical scaling. However, if scaling becomes necessary, options for horizontal scaling and sharding can be explored.
+
+* **Indexes**: Indexes were added to the database, particularly for joins. This will be beneficial as the dataset expands, ensuring better performance for complex queries.
+
+* **Swagger Documentation**: All secured endpoints are hidden in the production Swagger UI to avoid exposing sensitive routes to unauthorized users.
+
+* **Handling New Episodes**: When a new Star Wars episode is released, it will need to be manually added to the database. This can be automated in the future, but currently, it is done manually to ensure control and accuracy.
+
+* **Data Cleanup**: Sample data (e.g., from the YAML configuration) will be removed in production environments, as it's only useful for testing during development.
+
+* **Production Setup**: To ensure smooth production operation, logging and monitoring tools will be implemented for tracking performance and errors. The application will also be optimized for reading (as the data is mostly static with few creates) to minimize the load on the database.
+
+* **Testing Strategy**: To ensure the reliability of the application, I implemented unit and integration tests. These tests help catch any bugs early on and ensure that the system behaves as expected when the application scales or new features are added.
+
+* **Data Modeling**: I carefully structured the data to be normalized, ensuring easy future expansion. For example, I chose PostgreSQL for its strong relational capabilities, allowing me to model complex relationships between characters, planets, and episodes. This relational model will make it easier to scale and maintain data integrity as the database grows.
+
+This approach ensures that the application will continue to function well as it scales and evolves over time, with a focus on security, maintainability, and performance.\
+
+## Author
+
+[Maciej Konieczny](https://github.com/ifmcjthenknczny)
