@@ -16,6 +16,7 @@ import { UpdateEpisodeDto } from './dto/update-episode.dto';
 import { Protected } from 'src/common/decorators/protected/protected.decorator';
 import { DEFAULT_VALUES, PaginationDto } from 'src/common/dto/pagination.dto';
 import { ApiResponse } from '@nestjs/swagger';
+import { Paginated } from 'src/common/decorators/paginated/paginated.decorator';
 
 @Controller('episodes')
 export class EpisodesController {
@@ -31,7 +32,7 @@ export class EpisodesController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Bad request, possibly a validation error',
+    description: 'Bad request, possibly a validation or foreign key error',
   })
   @ApiResponse({
     status: 409,
@@ -46,6 +47,7 @@ export class EpisodesController {
   }
 
   @Get()
+  @Paginated()
   @ApiResponse({
     status: 200,
     description: 'Successful response with paginated list of episodes',
@@ -97,7 +99,7 @@ export class EpisodesController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Bad request, possibly a validation error',
+    description: 'Bad request, possibly a validation or foreign key error',
   })
   @ApiResponse({
     status: 404,
