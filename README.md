@@ -9,24 +9,41 @@ This project implements a backend API for managing Star Wars characters. It is b
 
 **To Run:**
 1. Install Docker and Yarn.
-2. `git clone https://github.com/ifmcjthenknczny/star-wars-api`
-3. `cd star-wars-api`
-4. `docker-compose up --build -d` (API at `http://localhost:3000`)  
+2. `git clone https://github.com/ifmcjthenknczny/star-wars-api && cd star-wars-api`
+3. `docker-compose up --build -d` (API at `http://localhost:3000`)  
 
-**Dev Mode:** Same Docker setup, then `cp .env.example .env`, `docker-compose rm -s nestjs-app`, and `yarn start:dev`.  
+**Dev Mode:** 
+(do previous steps first)  
+4. `cp .env.example .env && docker-compose rm -s nestjs-app && yarn start:dev`  
 
-**Access API Docs:** `http://localhost:3000/api`.  
+**API Docs:** `http://localhost:3000/api`.  
 
-**API Key:** Requires `x-api-key` header with value `codeandpepper` for some endpoints.  
+**API Key:** Endpoints which method is other than `GET` requires `x-api-key` header with value <details>
+<summary>Reveal secret</summary>
+`codeandpepper`.  
+
+## Table of Contents
+- [Used technologies](#used-technologies)
+- [Setup, Installation and Running](#setup--installation-and-running)
+- [Running in watch mode](#running-in-watch-mode)
+- [Environment Variables](#environment-variables)
+- [API Docs](#api-docs)
+- [API Key Authentication](#api-key-authentication)
+- [Database Structure](#database-structure)
+- [Architectural Decisions](#architectural-decisions)
+- [Ensuring Application Stability in Production](#ensuring-application-stability-in-production)
+- [License](#license)
+- [Author](#author)
 
 ## Used technologies
 * NestJS
 * TypeScript
-* TypeORM
 * PostgreSQL
+* TypeORM
 * Docker & Docker Compose
 * Yarn
 * Swagger (@nestjs/swagger)
+* Class-validator, class-transformer
 
 ## Setup, Installation and Running
 
@@ -70,36 +87,23 @@ yarn start:dev
 
 ## Environment Variables
 
-* ```API_KEY```
-Used to authenticate API requests and restrict access to certain endpoints.
-
-* ```DATABASE_HOST```
-Specifies the database server location (locally hosted in this case).
-
-* ```DATABASE_NAME```
-The name of the PostgreSQL database containing the Star Wars data.
-
-* ```DATABASE_PASSWORD```
-The password for connecting to the PostgreSQL database.
-
-* ```DATABASE_PORT```
-The port used for the PostgreSQL database (default is 5432).
-
-* ```DATABASE_USER```
-The username for authenticating with the PostgreSQL database.
-
-* ```PORT```
-The port on which the backend API server listens.
+* ```API_KEY```: Used to authenticate API requests and restrict access to certain endpoints.
+* ```DATABASE_HOST```: Specifies the database server location (locally hosted in this case).
+* ```DATABASE_NAME```: The name of the PostgreSQL database containing the Star Wars data.
+* ```DATABASE_PASSWORD```: The password for connecting to the PostgreSQL database.
+* ```DATABASE_PORT```: The port used for the PostgreSQL database (default is 5432).
+* ```DATABASE_USER```: The username for authenticating with the PostgreSQL database.
+* ```PORT```: The port on which the backend API server listens.
 
 The values for these environment variables for Docker deployment are declared in `docker-compose.yml`. For local development, you can also use `.env` file.
 
 ## API Docs
 
-The API is documented and accessible via Swagger at `http://localhost:3000/api`.
+The API is documented and accessible via Swagger at `http://localhost:3000/api`. Endpoints that are protected by `x-api-key` are hidden in production environment.
 
 ## API Key Authentication
 
-Some endpoints are secured and require the x-api-key header for access. The default API key is:
+Some endpoints are secured and require the `x-api-key` header for access. The default API key is:
 
 <details>
 <summary>Reveal secret</summary>
@@ -160,17 +164,15 @@ CREATE TABLE IF NOT EXISTS character_episodes (
 
 * **REST API**: Chosen for its simplicity in implementing basic CRUD operations. It is widely popular and provides an easy way to leverage NestJS decorators for routing and handling parameters.
 
-* **Database Choice**: PostgreSQL: PostgreSQL was selected over MongoDB due to its complexity, but it provides better scalability for future expansions. The application may eventually include more detailed information about planets and episodes, requiring a normalized database structure. This decision involves creating four tables to properly represent the relationships between the data. The creation and updating of character records are performed within a transaction to enhance system resilience against unexpected errors.
+* **Inspiration from PokeAPI**: Some architectural choices were inspired by solutions from [PokeAPI](https://pokeapi.co/), an API with a similar goal and good documentation.
 
-* **Normalized Data**: The database schema is designed with normalization in mind to allow the app to grow in various directions while maintaining consistency and reducing redundancy.
-
-* **Schema vs. MongoDB Flexibility**: While MongoDB is flexible, a schema-based approach was chosen to ensure query results remain consistent and predictable. MongoDB could easily support denormalized data, but future-proofing the app with a schema will better suit the long-term goals of consistency and expandability.
-
-* **Minimized Typo Risk**: The use of table foreign keys reduces the likelihood of typos, especially when adding new content like Star Wars characters. This approach also ensures that changes in data, such as the release of a new episode, won't require code modifications.
-
-* **Additional Database Validation**: Postgres provides validation at the database level and ensures that data integrity is maintained and that only valid data is stored.
-
-* **Inspiration from PokeAPI**: The architectural choices were inspired by solutions from [PokeAPI](https://pokeapi.co/), an API with a similar goal and good documentation.
+* **Database Choice**: PostgreSQL, while more complex, was selected over MongoDB because of:
+    * **Normalized Data**: The database schema is designed with normalization in mind to allow the app to grow in various directions while maintaining consistency and reducing redundancy.  
+    * **Better Scalability**: The application may eventually include more detailed information about planets and episodes, which will necessitate a normalized database structure – a database with a relational model will then prove very useful.
+    * **Schema Inflexibility**: While MongoDB is flexible, a schema-based approach was chosen to ensure query results remain consistent and predictable. MongoDB could easily support denormalized data, but future-proofing the app with a schema will better suit the long-term goals of consistency and expandability.  
+    * **Foreign Keys**: They reduce likelihood of typos, especially when adding new content like Star Wars characters. This approach also ensures that changes in data, such as the release of a new episode, won't require code modifications.  
+    * **Additional Database Validation**: Postgres provides validation at the database level and ensures that data integrity is maintained and that only valid data is stored.  
+    * **ACID consistency**: Creation and updating of character records are performed within a transaction to enhance the system's resilience against unexpected errors.  
 
 * **Consistency in Data**: Planets and episodes are not automatically created when adding characters. This decision was made to maintain database consistency and avoid breaking modularity.
 
@@ -183,17 +185,17 @@ To ensure the application remains performant and stable as it grows, and to main
 
 * **Future Expansion**: As additional data about planets becomes available, new endpoints may be added to allow updates. However, the existing endpoints already provide the necessary data retrieval functionality.
 
-* **Endpoint Security**: To protect endpoints from unauthorized access, JWT (JSON Web Tokens) is the recommended approach. Although implementing JWT authentication was outside the scope of this task, limited access is simulated using an API key. In the future, JWT would offer better security due to its shorter expiration time.
+* **Endpoint Security**: To protect endpoints from unauthorized access, JWT (JSON Web Tokens) is the recommended approach. Although implementing JWT authentication was outside the scope of this task, limited access is simulated using an API key. In prod environment, JWT would offer better security due to its shorter expiration time.
 
 * **Database Scalability**: The Star Wars database is not expected to grow beyond the limits of vertical scaling. However, if scaling becomes necessary, options for horizontal scaling and sharding can be explored.
 
-* **Indexes**: Indexes were added to the database, particularly for joins. This will be beneficial as the dataset expands, ensuring better performance for complex queries.
+* **Indexes**: Anticipating future growth of the dataset, indexes were added to the database, especially for joined columns. This measure will ensure better performance for complex queries as the data expands.
 
-* **Swagger Documentation**: All secured endpoints are hidden in the production Swagger UI to avoid exposing sensitive routes to unauthorized users.
+* **Swagger Documentation**: Thinking about the future, all secured endpoints are hidden in the production Swagger UI to avoid exposing sensitive routes to unauthorized users.
 
 * **Handling New Episodes**: When a new Star Wars episode is released, it will need to be manually added to the database. This can be automated in the future, but currently, it is done manually to ensure control and accuracy.
 
-* **Data Cleanup**: Sample data (e.g., from the YAML configuration) will be removed in production environments, as it's only useful for testing during development.
+* **Data Cleanup**: Sample data (e.g., from the YAML configuration) shall be removed in production environments, as it's only useful for testing during development.
 
 * **Production Setup**: To ensure smooth production operation, logging and monitoring tools will be implemented for tracking performance and errors. The application will also be optimized for reading (as the data is mostly static with few creates) to minimize the load on the database.
 
