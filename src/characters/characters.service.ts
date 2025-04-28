@@ -3,25 +3,41 @@ import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
 import { CharacterEntity } from './entities/character.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { CharacterNameDto } from './dto/character-name.dto';
 import { mapCharacterEntityToDto } from './character.mapper';
+import { CharacterEpisode } from './entities/character-episodes.entity';
 
 @Injectable()
 export class CharactersService {
   constructor(
+    private readonly dataSource: DataSource,
+
     @InjectRepository(CharacterEntity)
     private readonly characterRepo: Repository<CharacterEntity>,
+
+    @InjectRepository(CharacterEpisode)
+    private readonly characterEpisodeRepo: Repository<CharacterEpisode>,
   ) {}
 
-  async create(createCharacterDto: CreateCharacterDto) {
-    const character = this.characterRepo.create(createCharacterDto);
-    const savedCharacter = await this.characterRepo.save(character);
+  async create({ episodes, ...characterRest }: CreateCharacterDto) {
+    return this.dataSource.transaction(async (entityManager: EntityManager) => {
+      const character = this.characterRepo.create(characterRest);
+      const characterEpisode = this.characterEpisodeRepo.create(
+        episodes.map((episode) => ({
+          character_name: character.name,
+          episode,
+        })),
+      );
+      character.characterEpisodes = characterEpisode;
 
-    return {
-      message: `Character ${savedCharacter.name} created successfully`,
-    };
+      const savedCharacter = await entityManager.save(CharacterEntity, character);
+
+      return {
+        message: `Character ${savedCharacter.name} created successfully`,
+      };
+    });
   }
 
   async findAll({ page, perPage }: PaginationDto) {

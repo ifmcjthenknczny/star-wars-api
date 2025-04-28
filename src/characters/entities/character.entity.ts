@@ -16,7 +16,7 @@ export class CharacterEntity {
   @OneToMany(
     () => CharacterEpisode,
     (characterEpisode) => characterEpisode.character,
-    { cascade: ['insert', 'update'] },
+    { cascade: true },
   )
   characterEpisodes: CharacterEpisode[];
 }
