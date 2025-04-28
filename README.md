@@ -64,7 +64,9 @@ Run the following command in `star-wars-api` directory to start the application 
 docker-compose up --build -d
 ```
 
-This will build the project and run it in detached mode. It will also implement example data and run the PostgreSQL container. API will be available at `http://localhost:3000`, as PostgreSQL willl be available at port `5432`.
+This will build the project and run it in detached mode. It will also implement example data and run the PostgreSQL container. API will be available at `http://localhost:3000`, as PostgreSQL willl be available at port `5432`.  
+
+If you want to use your own PostgreSQL database, you don't need to build and run the containers. Just fill in the `.env` file with the appropriate values, run `yarn start:prod`, and it will work fine just the same.
 
 ## Running in watch mode
 
