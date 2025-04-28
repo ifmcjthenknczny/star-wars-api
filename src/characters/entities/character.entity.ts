@@ -1,6 +1,6 @@
 import { Optional } from '@nestjs/common';
 import { Entity, Column, Unique, PrimaryColumn, OneToMany } from 'typeorm';
-import { CharacterEpisode } from './character-episodes.entity';
+import { CharacterEpisodeEntity } from './character-episodes.entity';
 
 @Entity('characters')
 @Unique(['name'])
@@ -14,9 +14,9 @@ export class CharacterEntity {
   planet: string;
 
   @OneToMany(
-    () => CharacterEpisode,
+    () => CharacterEpisodeEntity,
     (characterEpisode) => characterEpisode.character,
     { cascade: true },
   )
-  characterEpisodes: CharacterEpisode[];
+  characterEpisodes: CharacterEpisodeEntity[];
 }

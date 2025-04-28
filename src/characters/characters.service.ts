@@ -7,7 +7,7 @@ import { DataSource, EntityManager, Repository } from 'typeorm';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { CharacterNameDto } from './dto/character-name.dto';
 import { mapCharacterEntityToDto } from './character.mapper';
-import { CharacterEpisode } from './entities/character-episodes.entity';
+import { CharacterEpisodeEntity } from './entities/character-episodes.entity';
 
 @Injectable()
 export class CharactersService {
@@ -17,8 +17,8 @@ export class CharactersService {
     @InjectRepository(CharacterEntity)
     private readonly characterRepo: Repository<CharacterEntity>,
 
-    @InjectRepository(CharacterEpisode)
-    private readonly characterEpisodeRepo: Repository<CharacterEpisode>,
+    @InjectRepository(CharacterEpisodeEntity)
+    private readonly characterEpisodeRepo: Repository<CharacterEpisodeEntity>,
   ) {}
 
   async create({ episodes, ...characterRest }: CreateCharacterDto) {
@@ -32,7 +32,7 @@ export class CharactersService {
       );
 
       await entityManager.insert(CharacterEntity, character);
-      await entityManager.insert(CharacterEpisode, characterEpisode);
+      await entityManager.insert(CharacterEpisodeEntity, characterEpisode);
 
       return {
         message: `Character ${characterRest.name} created successfully`,
@@ -98,16 +98,18 @@ export class CharactersService {
       );
 
       if (episodes) {
-        await entityManager.delete(CharacterEpisode, { character: { name } });
-  
+        await entityManager.delete(CharacterEpisodeEntity, {
+          character: { name },
+        });
+
         const newCharacterEpisodes = episodes.map((episodeCodename) => {
-          const characterEpisode = new CharacterEpisode();
+          const characterEpisode = new CharacterEpisodeEntity();
           characterEpisode.episode = episodeCodename;
           characterEpisode.character = character;
           return characterEpisode;
         });
-  
-        await entityManager.save(CharacterEpisode, newCharacterEpisodes);
+
+        await entityManager.save(CharacterEpisodeEntity, newCharacterEpisodes);
       }
 
       return { message: `Character '${name}' updated successfully` };

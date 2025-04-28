@@ -3,12 +3,12 @@ import { CharactersService } from './characters.service';
 import { CharactersController } from './characters.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CharacterEntity } from './entities/character.entity';
-import { CharacterEpisode } from './entities/character-episodes.entity';
+import { CharacterEpisodeEntity } from './entities/character-episodes.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([CharacterEntity]),
-    TypeOrmModule.forFeature([CharacterEpisode]),
+    TypeOrmModule.forFeature([CharacterEpisodeEntity]),
   ],
   controllers: [CharactersController],
   providers: [CharactersService],

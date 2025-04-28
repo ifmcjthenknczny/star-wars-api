@@ -3,7 +3,7 @@ import { EpisodeEntity } from 'src/episodes/entities/episode.entity';
 import { CharacterEntity } from './character.entity';
 
 @Entity('character_episodes')
-export class CharacterEpisode {
+export class CharacterEpisodeEntity {
   @PrimaryColumn()
   character_name: string;
 
