@@ -11,7 +11,7 @@ const formatErrorDetails = ({ detail, table }: DriverError) => {
     return '';
   }
 
-  const regex = /Key \((\w+)\)=\((\d+)\) already exists\./;
+  const regex = /Key \((\w+)\)=\(([^)]+)\) already exists\./;
   const match = detail.match(regex);
 
   if (match) {

@@ -18,7 +18,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "checkAll": "yarn lint && yarn format && yarn build && yarn test"
+    "checkAll": "yarn lint && yarn format && yarn build && yarn test",
+    "dev": "yarn start:dev"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
