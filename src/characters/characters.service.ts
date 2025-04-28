@@ -30,15 +30,12 @@ export class CharactersService {
           episode,
         })),
       );
-      character.characterEpisodes = characterEpisode;
 
-      const savedCharacter = await entityManager.save(
-        CharacterEntity,
-        character,
-      );
+      await entityManager.insert(CharacterEntity, character);
+      await entityManager.insert(CharacterEpisode, characterEpisode);
 
       return {
-        message: `Character ${savedCharacter.name} created successfully`,
+        message: `Character ${characterRest.name} created successfully`,
       };
     });
   }
@@ -86,27 +83,33 @@ export class CharactersService {
         throw new NotFoundException(`Character with name "${name}" not found.`);
       }
 
+      if (newName) {
+        character.name = newName;
+      }
+
+      if (planet !== undefined) {
+        character.planet = planet;
+      }
+
+      await entityManager.update(
+        CharacterEntity,
+        { name },
+        { name: newName, planet },
+      );
+
       if (episodes) {
         await entityManager.delete(CharacterEpisode, { character: { name } });
-
+  
         const newCharacterEpisodes = episodes.map((episodeCodename) => {
           const characterEpisode = new CharacterEpisode();
           characterEpisode.episode = episodeCodename;
           characterEpisode.character = character;
           return characterEpisode;
         });
-        character.characterEpisodes = newCharacterEpisodes;
+  
+        await entityManager.save(CharacterEpisode, newCharacterEpisodes);
       }
 
-      if (newName) {
-        character.name = newName;
-      }
-
-      if (planet) {
-        character.planet = planet;
-      }
-
-      await entityManager.save(CharacterEntity, character);
       return { message: `Character '${name}' updated successfully` };
     });
   }

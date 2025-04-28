@@ -49,6 +49,8 @@ export class QueryFailedFilter implements ExceptionFilter {
   catch(exception: QueryFailedError) {
     const driverError: DriverError = exception.driverError;
 
+    console.log({ driverError });
+
     if (driverError?.code === '23505') {
       throw new ConflictException(formatErrorDetails(driverError));
     }

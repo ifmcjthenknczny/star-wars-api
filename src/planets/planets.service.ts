@@ -31,10 +31,10 @@ export class PlanetsService {
 
   async create({ name }: PlanetNameDto) {
     const planet = this.planetRepo.create({ name });
-    const savedPlanet = await this.planetRepo.save(planet);
+    await this.planetRepo.insert(planet);
 
     return {
-      message: `Planet ${savedPlanet.name} created successfully`,
+      message: `Planet ${name} created successfully`,
     };
   }
 }

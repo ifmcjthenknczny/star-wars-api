@@ -16,10 +16,10 @@ export class EpisodesService {
 
   async create(createEpisodeDto: CreateEpisodeDto) {
     const episode = this.episodesRepo.create(createEpisodeDto);
-    const savedEpisode = await this.episodesRepo.save(episode);
+    await this.episodesRepo.insert(episode);
 
     return {
-      message: `Episode ${savedEpisode.codename} created successfully`,
+      message: `Episode ${createEpisodeDto.codename} created successfully`,
     };
   }
 
