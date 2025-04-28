@@ -32,7 +32,10 @@ export class CharactersService {
       );
       character.characterEpisodes = characterEpisode;
 
-      const savedCharacter = await entityManager.save(CharacterEntity, character);
+      const savedCharacter = await entityManager.save(
+        CharacterEntity,
+        character,
+      );
 
       return {
         message: `Character ${savedCharacter.name} created successfully`,
@@ -69,18 +72,43 @@ export class CharactersService {
 
   async update(
     { name }: CharacterNameDto,
-    updateCharacterDto: UpdateCharacterDto,
+    { episodes, name: newName, planet }: UpdateCharacterDto,
   ) {
-    const result = await this.characterRepo.update(
-      { name },
-      updateCharacterDto,
-    );
+    return this.dataSource.transaction(async (entityManager: EntityManager) => {
+      const character = await entityManager.findOne(CharacterEntity, {
+        where: { name },
+        relations: {
+          characterEpisodes: true,
+        },
+      });
 
-    if (result.affected === 0) {
-      throw new NotFoundException(`Character '${name}' not found`);
-    }
+      if (!character) {
+        throw new NotFoundException(`Character with name "${name}" not found.`);
+      }
 
-    return { message: `Character '${name}' updated successfully` };
+      if (episodes) {
+        await entityManager.delete(CharacterEpisode, { character: { name } });
+
+        const newCharacterEpisodes = episodes.map((episodeCodename) => {
+          const characterEpisode = new CharacterEpisode();
+          characterEpisode.episode = episodeCodename;
+          characterEpisode.character = character;
+          return characterEpisode;
+        });
+        character.characterEpisodes = newCharacterEpisodes;
+      }
+
+      if (newName) {
+        character.name = newName;
+      }
+
+      if (planet) {
+        character.planet = planet;
+      }
+
+      await entityManager.save(CharacterEntity, character);
+      return { message: `Character '${name}' updated successfully` };
+    });
   }
 
   async remove({ name }: CharacterNameDto) {

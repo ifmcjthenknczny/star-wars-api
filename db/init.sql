@@ -14,8 +14,8 @@ CREATE TABLE IF NOT EXISTS episodes (
 );
 
 CREATE TABLE IF NOT EXISTS character_episodes (
-    character_name VARCHAR(255) REFERENCES characters(name) ON DELETE CASCADE,
-    episode VARCHAR(32) REFERENCES episodes(codename) ON DELETE CASCADE,
+    character_name VARCHAR(255) REFERENCES characters(name) ON DELETE CASCADE ON UPDATE CASCADE,
+    episode VARCHAR(32) REFERENCES episodes(codename) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (character_name, episode)
 );
 

@@ -13,12 +13,13 @@ export class CharacterEpisode {
   @ManyToOne(
     () => CharacterEntity,
     (character) => character.characterEpisodes,
-    { onDelete: 'CASCADE' },
+    { onUpdate: 'CASCADE', onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'character_name', referencedColumnName: 'name' })
   character: CharacterEntity;
 
   @ManyToOne(() => EpisodeEntity, (episode) => episode.codename, {
+    onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'episode', referencedColumnName: 'codename' })
