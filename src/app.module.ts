@@ -5,6 +5,8 @@ import { ConfigModule } from './config/config.module';
 import { LoggerModule } from 'nestjs-pino';
 import { EpisodesModule } from './episodes/episodes.module';
 import { PlanetsModule } from './planets/planets.module';
+import { ThrottlerModule } from '@nestjs/throttler';
+
 @Module({
   imports: [
     CharactersModule,
@@ -25,6 +27,7 @@ import { PlanetsModule } from './planets/planets.module';
     }),
     EpisodesModule,
     PlanetsModule,
+    ThrottlerModule.forRoot(),
   ],
   controllers: [],
   providers: [],

@@ -205,6 +205,8 @@ To ensure the application remains performant and stable as it grows, and to main
 
 * **CI/CD Pipeline**: The project utilizes a Continuous Integration (CI) pipeline for automated builds and tests. Implementing Continuous Deployment (CD) in the future will enable seamless and automated releases to production, further improving stability and efficiency.
 
+* **Rate Limiting:** I have implemented default global rate limiting (10 requests per 60 second timeframe) to protect the API from abuse and ensure fair usage. This helps maintain the stability and availability of the application under heavy load. It should be more customized in the future, along with implementing custom storage.
+
 ## License
 
 This work is licensed under a [Creative Commons Attribution-NonCommercial 4.0 International License](https://creativecommons.org/licenses/by-nc/4.0/).

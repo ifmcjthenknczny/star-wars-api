@@ -17,12 +17,14 @@ import { Protected } from 'src/common/decorators/protected/protected.decorator';
 import { DEFAULT_VALUES, PaginationDto } from 'src/common/dto/pagination.dto';
 import { ApiResponse } from '@nestjs/swagger';
 import { Paginated } from 'src/common/decorators/paginated/paginated.decorator';
+import { Throttled } from 'src/common/decorators/throttled/throttled.decorator';
 
 @Controller('episodes')
 export class EpisodesController {
   constructor(private readonly episodesService: EpisodesService) {}
 
   @Protected()
+  @Throttled()
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiResponse({
@@ -47,6 +49,7 @@ export class EpisodesController {
   }
 
   @Get()
+  @Throttled()
   @Paginated()
   @ApiResponse({
     status: 200,
@@ -91,6 +94,7 @@ export class EpisodesController {
   }
 
   @Protected()
+  @Throttled()
   @Patch(':codename')
   @ApiResponse({
     status: 200,
@@ -122,6 +126,7 @@ export class EpisodesController {
   }
 
   @Protected()
+  @Throttled()
   @Delete(':codename')
   @ApiResponse({
     status: 200,

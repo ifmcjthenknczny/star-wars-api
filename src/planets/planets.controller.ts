@@ -15,12 +15,14 @@ import { Protected } from 'src/common/decorators/protected/protected.decorator';
 import { ApiResponse } from '@nestjs/swagger';
 import { CreatePlanetDto } from './dto/create-planet.dto';
 import { Paginated } from 'src/common/decorators/paginated/paginated.decorator';
+import { Throttled } from 'src/common/decorators/throttled/throttled.decorator';
 
 @Controller('planets')
 export class PlanetsController {
   constructor(private readonly planetsService: PlanetsService) {}
 
   @Get()
+  @Throttled()
   @Paginated()
   @ApiResponse({
     status: 200,
@@ -60,6 +62,7 @@ export class PlanetsController {
   }
 
   @Protected()
+  @Throttled()
   @Delete(':name')
   @ApiResponse({
     status: 200,
@@ -76,6 +79,7 @@ export class PlanetsController {
   }
 
   @Protected()
+  @Throttled()
   @HttpCode(HttpStatus.CREATED)
   @ApiResponse({
     status: 201,

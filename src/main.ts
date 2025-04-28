@@ -17,8 +17,8 @@ async function bootstrap() {
   );
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('Star Wars API recruitment task')
-    .setDescription('Star Wars API Documentation')
+    .setTitle('Star Wars API')
+    .setDescription('Star Wars API recruitment task documentation')
     .setVersion('0.0.1')
     .addApiKey({ type: 'apiKey', in: 'header', name: 'x-api-key' }, 'x-api-key')
     .build();

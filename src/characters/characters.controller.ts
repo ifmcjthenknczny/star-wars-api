@@ -17,12 +17,14 @@ import { Protected } from 'src/common/decorators/protected/protected.decorator';
 import { DEFAULT_VALUES, PaginationDto } from 'src/common/dto/pagination.dto';
 import { ApiResponse } from '@nestjs/swagger';
 import { Paginated } from 'src/common/decorators/paginated/paginated.decorator';
+import { Throttled } from 'src/common/decorators/throttled/throttled.decorator';
 
 @Controller('characters')
 export class CharactersController {
   constructor(private readonly charactersService: CharactersService) {}
 
   @Post()
+  @Throttled()
   @Protected()
   @HttpCode(HttpStatus.CREATED)
   @ApiResponse({
@@ -47,6 +49,7 @@ export class CharactersController {
   }
 
   @Get()
+  @Throttled()
   @Paginated()
   @ApiResponse({
     status: 200,
@@ -90,9 +93,11 @@ export class CharactersController {
     return { result, ...pagination };
   }
 
+  @Get(':name')
+  @Throttled()
   @ApiResponse({
     status: 200,
-    description: 'Successful response with a single planet',
+    description: 'Successful response with a single character',
     content: {
       'application/json': {
         schema: {
@@ -109,11 +114,17 @@ export class CharactersController {
       },
     },
   })
+  @ApiResponse({
+    status: 404,
+    description: 'Character not found',
+    example: { message: 'Character James Lovelock not found' },
+  })
   async findOne(@Param('name') name: string) {
     return this.charactersService.findOne(name);
   }
 
   @Protected()
+  @Throttled()
   @Patch(':name')
   @ApiResponse({
     status: 200,
@@ -145,6 +156,7 @@ export class CharactersController {
   }
 
   @Protected()
+  @Throttled()
   @Delete(':name')
   @ApiResponse({
     status: 200,
