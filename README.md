@@ -20,7 +20,8 @@ This project implements a backend API for managing Star Wars characters. It is b
 
 **API Key:** Endpoints which method is other than `GET` requires `x-api-key` header with value <details>
 <summary>Reveal secret</summary>
-`codeandpepper`.  
+`codeandpepper`.
+</details>
 
 ## Table of Contents
 - [Used technologies](#used-technologies)
@@ -105,7 +106,7 @@ The API is documented and accessible via Swagger at `http://localhost:3000/api`.
 
 ## API Key Authentication
 
-Some endpoints are secured and require the `x-api-key` header for access. The default API key is:
+Some endpoints are secured and require the `x-api-key` header for access. The default API key is:  
 
 <details>
 <summary>Reveal secret</summary>
