@@ -16,7 +16,7 @@ const mockCharacter = {
 };
 
 const mockCharacterList = [
-  mockCharacter,
+  { ...mockCharacter },
   { name: 'Other Character', planet: 'Mars', episodes: ['HOPE'] },
 ];
 
@@ -68,11 +68,7 @@ describe('CharactersController', () => {
 
   describe('create', () => {
     it('should call charactersService.create and return the result', async () => {
-      const createDto: CreateCharacterDto = {
-        name: 'James Lovelock',
-        episodes: ['PHANTOM'],
-        planet: 'Earth',
-      };
+      const createDto: CreateCharacterDto = { ...mockCharacter };
       const expectedResult = {
         message: `Character ${createDto.name} created successfully`,
       };
@@ -134,11 +130,10 @@ describe('CharactersController', () => {
 
   describe('findOne', () => {
     it('should call charactersService.findOne with the name and return the result', async () => {
-      const name = 'James Lovelock';
       const expectedResult = mockCharacter;
       mockCharactersService.findOne.mockResolvedValue(expectedResult);
-      const result = await controller.findOne(name);
-      expect(service.findOne).toHaveBeenCalledWith(name);
+      const result = await controller.findOne(mockCharacter.name);
+      expect(service.findOne).toHaveBeenCalledWith(mockCharacter.name);
       expect(result).toEqual(expectedResult);
     });
 
@@ -153,16 +148,18 @@ describe('CharactersController', () => {
 
   describe('update', () => {
     it('should call charactersService.update with name and DTO, and return the result', async () => {
-      const name = 'James Lovelock';
       const updateDto: UpdateCharacterDto = {
         planet: 'Mars',
       };
       const expectedResult = {
-        message: `Character ${name} updated successfully`,
+        message: `Character ${mockCharacter.name} updated successfully`,
       };
       mockCharactersService.update.mockResolvedValue(expectedResult);
-      const result = await controller.update(name, updateDto);
-      expect(service.update).toHaveBeenCalledWith({ name }, updateDto);
+      const result = await controller.update(mockCharacter.name, updateDto);
+      expect(service.update).toHaveBeenCalledWith(
+        { name: mockCharacter.name },
+        updateDto,
+      );
       expect(result).toEqual(expectedResult);
     });
 
@@ -180,13 +177,12 @@ describe('CharactersController', () => {
 
   describe('remove', () => {
     it('should call charactersService.remove with name and return the result', async () => {
-      const name = 'James Lovelock';
       const expectedResult = {
-        message: `Character ${name} deleted successfully`,
+        message: `Character ${mockCharacter.name} deleted successfully`,
       };
       mockCharactersService.remove.mockResolvedValue(expectedResult);
-      const result = await controller.remove(name);
-      expect(service.remove).toHaveBeenCalledWith({ name });
+      const result = await controller.remove(mockCharacter.name);
+      expect(service.remove).toHaveBeenCalledWith({ name: mockCharacter.name });
       expect(result).toEqual(expectedResult);
     });
 

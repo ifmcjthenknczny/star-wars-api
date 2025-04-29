@@ -74,9 +74,7 @@ export class CharactersService {
     return this.dataSource.transaction(async (entityManager: EntityManager) => {
       const character = await entityManager.findOne(CharacterEntity, {
         where: { name },
-        relations: {
-          characterEpisodes: true,
-        },
+        relations: episodes !== undefined ? { characterEpisodes: true } : {},
       });
 
       if (!character) {
